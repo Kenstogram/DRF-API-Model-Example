@@ -15,10 +15,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import RedirectView
+from django.conf.urls import url
+from django.urls import include, path
+from core import views
+from core.views import IndexView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.urls')),
     path('auth/', include('rest_framework_social_oauth2.urls')),
     path('api-auth/', include('rest_framework.urls')),
+    path('index/', IndexView.as_view(), name='home'),
 ]

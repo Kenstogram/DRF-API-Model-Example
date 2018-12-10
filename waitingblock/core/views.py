@@ -7,19 +7,32 @@ from rest_framework import permissions
 from core.permissions import IsOwnerOrReadOnly
 from rest_framework import viewsets
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    This viewset automatically provides `list` and `detail` actions.
-    """
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework import renderers
+
+from django.db import models
+from django_tables2 import MultiTableMixin, RequestConfig
+from django.views.generic import TemplateView
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect
+from django.urls import reverse, reverse_lazy
+
+from django.contrib.auth.forms import UserCreationForm
+from django.views import generic
+
+from .models import Table
+
+
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    This viewset automatically provides `list` and `detail` actions.
+    """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 class TableViewSet(viewsets.ModelViewSet):
     """
@@ -49,6 +62,18 @@ def api_root(request, format=None):
         'tables': reverse('tables-list', request=request, format=format)
     })
 
+class IndexView(TemplateView):
+    model = Table
+    template_name = 'waitingblock/index.html'
+    context_object_name = 'table'
+
+    def form_valid(self, form):
+        form.save()
+        return redirect('home')
+
+    def redirect_view(request):
+        response = redirect('home')
+        return response
 
 """
 class TableList(generics.ListCreateAPIView):
