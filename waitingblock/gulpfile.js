@@ -149,7 +149,7 @@ gulp.task('default', function(callback) {
 
 gulp.task('django', function() {
     const spawn = require('child_process').spawn;
-    return spawn('python', ['waitingblock/manage.py', 'runserver'])
+    return spawn('python', ['manage.py', 'runserver'])
         .stderr.on('data', (data) => {
         console.log(`${data}`);
     });
